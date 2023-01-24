@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 DataEntry entry = new DataEntry(1,17,2023, 1, 3, "food", "honeydew, egg, milk");
-                myRef2.push().setValue(entry);
+                myRef2.child("4").setValue(entry);
             }
         });
 
