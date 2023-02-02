@@ -1,15 +1,15 @@
 package com.zhangmegan.allie;
 
 public class DataEntry {
-    int month, day, year, hour, min;
+    int month, day, year, hour, minute;
     String type, entry;
 
-    public DataEntry(int month, int day, int year, int hour, int min, String type, String entry) {
+    public DataEntry(int month, int day, int year, int hour, int minute, String type, String entry) {
         this.month = month;
         this.day = day;
         this.year = year;
         this.hour = hour;
-        this.min = min;
+        this.minute = minute;
         this.type = type;
         this.entry = entry;
     }
@@ -26,8 +26,8 @@ public class DataEntry {
     public void setHour(int hour){
         this.hour = hour;
     }
-    public void setMin(int min){
-        this.min = min;
+    public void setMinute(int minute){
+        this.minute = minute;
     }
     public void setType(String type){
         this.type = type;
@@ -48,8 +48,8 @@ public class DataEntry {
     public int getHour(){
         return this.hour;
     }
-    public int getMin(){
-        return this.min;
+    public int getMinute(){
+        return this.minute;
     }
     public String getType(){
         return this.type;

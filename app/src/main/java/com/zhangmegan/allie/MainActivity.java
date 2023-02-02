@@ -52,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
 //                DataEntry entry = new DataEntry(Integer.parseInt(date_arr[0]),Integer.parseInt(date_arr[1]),
 //                        Integer.parseInt(date_arr[2]), Integer.parseInt(time_arr[0]), Integer.parseInt(time_arr[1]),
 //                        type_et.getText().toString(), log_entry_et.getText().toString());
-                DataEntry entry = new DataEntry(1,12,2023,1,11,"food", "milk, sunflower seeds");
-                myRef2.child("5").setValue(entry);
+                DataEntry entry = new DataEntry(12,31,2022,5,52,"symptom", "cramps");
+                myRef2.child("9").setValue(entry);
                 log_len++;
             }
         });
@@ -69,37 +69,45 @@ public class MainActivity extends AppCompatActivity {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 ArrayList<Object> id = (ArrayList<Object>) dataSnapshot.getValue();
+                System.out.print(id);
                 log_len = id.size();
 
                 // rearrange log by date/time
                 Map<String, Object> recent = (Map<String, Object>) id.get(log_len-1);
                 Map<String, Object> comp;
-                LocalDateTime recent_date = LocalDateTime.of((int)recent.get("year"), (int)recent.get("month"),
-                        (int)recent.get("day"), (int)recent.get("hour"), (int)recent.get("minute"));
+                LocalDateTime recent_date = LocalDateTime.of((int)(long)recent.get("year"), (int)(long)recent.get("month"),
+                        (int)(long)recent.get("day"), (int)(long)recent.get("hour"), (int)(long)recent.get("minute"));
 
                 int index = log_len-1;
                 for(int i = log_len-2; i >= 0; i--) {
                     comp = (Map<String, Object>) id.get(i);
-                    LocalDateTime comp_date = LocalDateTime.of((int)comp.get("year"), (int)comp.get("month"),
-                            (int)comp.get("day"), (int)comp.get("hour"), (int)comp.get("minute"));
+                    LocalDateTime comp_date = LocalDateTime.of((int)(long)comp.get("year"), (int)(long)comp.get("month"),
+                            (int)(long)comp.get("day"), (int)(long)comp.get("hour"), (int)(long)comp.get("minute"));
                     if(recent_date.compareTo(comp_date) >= 0) {
                         if(i != log_len-2) {
-                            id.set(i+1, recent);
-                            index = i+1;
+                            System.out.println("for loop ends");
+                            if(i > 0) {
+                                id.set(i + 1, recent);
+                                index = i+1;
+                            } else {
+                                id.set(0, recent);
+                                index = 0;
+                            }
                             myRef2.setValue(id);
                         }
                         break;
                     }
                     id.set(i+1, comp);
                 }
+                System.out.println(id);
 
                 // update symptoms map and ingredients frequency count
                 if(recent.get("type") == "symptom") {
-                    ArrayList<String> symptoms = (ArrayList<String>) Arrays.asList(((String) Objects.requireNonNull(recent.get("entry"))).split(", "));
+                    ArrayList<String> symptoms = new ArrayList<String>(Arrays.asList(((String) Objects.requireNonNull(recent.get("entry"))).split(", ")));
                     for (int i = index-1; i >= 0; i--) {
                         comp = (Map<String, Object>)id.get(i);
-                        LocalDateTime comp_date = LocalDateTime.of((int)comp.get("year"), (int)comp.get("month"),
-                                (int)comp.get("day"), (int)comp.get("hour"), (int)comp.get("minute"));
+                        LocalDateTime comp_date = LocalDateTime.of((int)(long)comp.get("year"), (int)(long)comp.get("month"),
+                                (int)(long)comp.get("day"), (int)(long)comp.get("hour"), (int)(long)comp.get("minute"));
                         if(Math.abs(comp_date.toEpochSecond(ZoneOffset.UTC) - recent_date.toEpochSecond(ZoneOffset.UTC)) > 172800) {
                             break;
                         }
