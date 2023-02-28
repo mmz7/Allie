@@ -3,12 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/1528910/AndroidStudioProjects/Allie/app/src/main/res/layout/activity_main.xml" value="0.19756838905775076" />
+        <entry key="..\:/Users/1528910/AndroidStudioProjects/Allie/app/src/main/res/layout/dashboard.xml" value="0.19756838905775076" />
+        <entry key="..\:/Users/1528910/AndroidStudioProjects/Allie/app/src/main/res/layout/log.xml" value="0.19756838905775076" />
+        <entry key="..\:/Users/1528910/AndroidStudioProjects/Allie/app/src/main/res/layout/log_container.xml" value="0.12092391304347826" />
+        <entry key="..\:/Users/1528910/AndroidStudioProjects/Allie/app/src/main/res/layout/log_content.xml" value="0.12092391304347826" />
+        <entry key="..\:/Users/1528910/AndroidStudioProjects/Allie/app/src/main/res/layout/logentrytemplate.xml" value="0.19756838905775076" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/dashboard.xml" value="0.21693840579710144" />
-        <entry key="app/src/main/res/layout/log.xml" value="0.21693840579710144" />
-        <entry key="app/src/main/res/layout/log_container.xml" value="0.21693840579710144" />
-        <entry key="app/src/main/res/layout/log_content.xml" value="0.21693840579710144" />
-        <entry key="app/src/main/res/layout/logentrytemplate.xml" value="0.335" />
       </map>
     </option>
   </component>

@@ -31,7 +31,7 @@ public class LogActivity extends AppCompatActivity {
     HashMap<String, Integer> ing_scores = new HashMap<String, Integer>();
     ArrayList<Object> id = new ArrayList<Object>();
     int log_len = 0;
-    int recent_index, current_day_start = 0;
+    int recent_index, current_day_start, total_days = 0;
     Context context = this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,6 @@ public class LogActivity extends AppCompatActivity {
         DatabaseReference myRef2 = database.getReference("User1");
 
         viewPager = findViewById(R.id.viewpager);
-
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             // This method is triggered when there is any scrolling activity for the current page
@@ -71,12 +70,7 @@ public class LogActivity extends AppCompatActivity {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
                 id = (ArrayList<Object>) dataSnapshot.getValue();
-                System.out.print(id);
                 log_len = id.size();
-
-                vpAdapter = new ViewPager2Adapter(context, id, current_day_start);
-
-                viewPager.setAdapter(vpAdapter);
 
                 // rearrange log by date/time
                 Map<String, Object> recent = (Map<String, Object>) id.get(log_len-1);
@@ -104,11 +98,7 @@ public class LogActivity extends AppCompatActivity {
                     }
                     id.set(i+1, comp);
                 }
-                System.out.println(id);
-
-                vpAdapter = new ViewPager2Adapter(context, id, current_day_start);
-
-                viewPager.setAdapter(vpAdapter);
+                System.out.println("test: "+id.get(7));
 
                 // find first entry of the same day
                 LocalDate last_entry = LocalDate.of((int)(long)recent.get("year"), (int)(long)recent.get("month"),
@@ -121,6 +111,13 @@ public class LogActivity extends AppCompatActivity {
                         current_day_start = i;
                     } else { break; }
                 }
+
+                total_days = (int)(long)((Map<String, Object>)id.get(log_len-1)).get("day_count");
+
+                vpAdapter = new ViewPager2Adapter(context, id, current_day_start, total_days);
+
+                viewPager.setAdapter(vpAdapter);
+                viewPager.setCurrentItem((int)(long)((Map<String, Object>)id.get(current_day_start)).get("day_count"));
 
                 // update symptoms map and ingredients frequency count
                 if(recent.get("type").equals("symptom")) {
