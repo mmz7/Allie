@@ -1,5 +1,6 @@
 package com.zhangmegan.allie;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
@@ -31,6 +32,7 @@ public class LogActivity extends AppCompatActivity {
     ArrayList<Object> id = new ArrayList<Object>();
     int log_len = 0;
     int recent_index, current_day_start = 0;
+    Context context = this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,9 +43,6 @@ public class LogActivity extends AppCompatActivity {
         DatabaseReference myRef2 = database.getReference("User1");
 
         viewPager = findViewById(R.id.viewpager);
-        vpAdapter = new ViewPager2Adapter(this, id, current_day_start);
-
-        viewPager.setAdapter(vpAdapter);
 
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -75,6 +74,10 @@ public class LogActivity extends AppCompatActivity {
                 System.out.print(id);
                 log_len = id.size();
 
+                vpAdapter = new ViewPager2Adapter(context, id, current_day_start);
+
+                viewPager.setAdapter(vpAdapter);
+
                 // rearrange log by date/time
                 Map<String, Object> recent = (Map<String, Object>) id.get(log_len-1);
                 Map<String, Object> comp;
@@ -102,6 +105,10 @@ public class LogActivity extends AppCompatActivity {
                     id.set(i+1, comp);
                 }
                 System.out.println(id);
+
+                vpAdapter = new ViewPager2Adapter(context, id, current_day_start);
+
+                viewPager.setAdapter(vpAdapter);
 
                 // find first entry of the same day
                 LocalDate last_entry = LocalDate.of((int)(long)recent.get("year"), (int)(long)recent.get("month"),
