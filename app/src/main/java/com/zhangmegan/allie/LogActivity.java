@@ -31,12 +31,21 @@ public class LogActivity extends AppCompatActivity {
     HashMap<String, Integer> ing_scores = new HashMap<String, Integer>();
     ArrayList<Object> id = new ArrayList<Object>();
     int log_len = 0;
-    int recent_index, current_day_start = 0;
+    int recent_index = 0;
+    int current_vp_pos = 0;
+    HashMap<Integer, Integer> day_start = new HashMap<Integer, Integer>();
+
     Context context = this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.log_container);
+
+        day_start.put(0,0);
+        day_start.put(1,3);
+        day_start.put(2,4);
+        day_start.put(3,7);
+        day_start.put(4,9);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
@@ -55,6 +64,7 @@ public class LogActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
+                current_vp_pos = position;
             }
 
             // triggered when there is
@@ -74,10 +84,6 @@ public class LogActivity extends AppCompatActivity {
                 System.out.print(id);
                 log_len = id.size();
 
-                vpAdapter = new ViewPager2Adapter(context, id, current_day_start);
-
-                viewPager.setAdapter(vpAdapter);
-
                 // rearrange log by date/time
                 Map<String, Object> recent = (Map<String, Object>) id.get(log_len-1);
                 Map<String, Object> comp;
@@ -95,6 +101,10 @@ public class LogActivity extends AppCompatActivity {
                             if(i > 0) {
                                 id.set(i + 1, recent);
                                 recent_index = i+1;
+                                int comp_daycount = (int)(long)comp.get("day_count");
+                                if(comp_daycount != (int)(long)recent.get("day_count")) {
+                                    day_start.put((int)(long)recent.get("day_count"), i+1);
+                                }
                             } else {
                                 id.set(0, recent);
                                 recent_index = 0;
@@ -106,21 +116,24 @@ public class LogActivity extends AppCompatActivity {
                 }
                 System.out.println(id);
 
-                vpAdapter = new ViewPager2Adapter(context, id, current_day_start);
+                System.out.println(day_start);
+
+                vpAdapter = new ViewPager2Adapter(context, id, day_start);
 
                 viewPager.setAdapter(vpAdapter);
+                viewPager.setCurrentItem(2);
 
                 // find first entry of the same day
-                LocalDate last_entry = LocalDate.of((int)(long)recent.get("year"), (int)(long)recent.get("month"),
-                        (int)(long)recent.get("day"));
-                for(int i = recent_index-1; i >= 0; i--) {
-                    comp = (Map<String, Object>) id.get(i);
-                    LocalDate current_entry = LocalDate.of((int)(long)comp.get("year"), (int)(long)comp.get("month"),
-                            (int)(long)comp.get("day"));
-                    if(last_entry.compareTo(current_entry) == 0) {
-                        current_day_start = i;
-                    } else { break; }
-                }
+//                LocalDate last_entry = LocalDate.of((int)(long)recent.get("year"), (int)(long)recent.get("month"),
+//                        (int)(long)recent.get("day"));
+//                for(int i = recent_index-1; i >= 0; i--) {
+//                    comp = (Map<String, Object>) id.get(i);
+//                    LocalDate current_entry = LocalDate.of((int)(long)comp.get("year"), (int)(long)comp.get("month"),
+//                            (int)(long)comp.get("day"));
+//                    if(last_entry.compareTo(current_entry) == 0) {
+//                        current_day_start = i;
+//                    } else { break; }
+//                }
 
                 // update symptoms map and ingredients frequency count
                 if(recent.get("type").equals("symptom")) {

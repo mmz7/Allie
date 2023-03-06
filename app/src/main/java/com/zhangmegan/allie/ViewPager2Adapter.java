@@ -12,20 +12,19 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.ViewHolder> {
 
     private Context context;
     private ArrayList list;
-    private final int current_index;
+    private HashMap<Integer, Integer> day_start;
 
-    private String[] test_arr = {"hi", "my", "name", "is", "Emmy"};
-
-    ViewPager2Adapter(Context context, ArrayList list, int current_index) {
+    ViewPager2Adapter(Context context, ArrayList list, HashMap<Integer, Integer> day_start) {
         this.context = context;
         this.list = list;
-        this.current_index = current_index;
+        this.day_start = day_start;
     }
 
     @NonNull
@@ -39,15 +38,15 @@ class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.ViewHolde
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 //        if(current_index+position > 0) {
         String date = "";
-        Map<String, Object> recent = (Map<String, Object>) list.get(7);
+        Map<String, Object> recent = (Map<String, Object>) list.get(day_start.get(position));
         int current_day = (int) (long) recent.get("day_count");
-        for(int i = 7+position; i+position < list.size(); i--) {
-            recent = (Map<String, Object>) list.get(i + position);
+        for(int i = day_start.get(position)+1; i < list.size(); i++) {
+            date += recent.get("month") + "/" + recent.get("day")+"\n";
+            recent = (Map<String, Object>) list.get(i);
             if((int)(long)recent.get("day_count") != current_day) {
                 break;
             }
-            current_day = i;
-            date += recent.get("month") + "/" + recent.get("day")+"\n";
+//            current_day = i;
 
         }
         holder.text.setText(date);
@@ -64,7 +63,7 @@ class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.ViewHolde
 
     @Override
     public int getItemCount() {
-        return test_arr.length;
+        return list.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
