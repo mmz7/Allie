@@ -21,10 +21,9 @@ class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.ViewHolde
     private ArrayList list;
     private HashMap<Integer, Integer> day_start;
 
-    ViewPager2Adapter(Context context, ArrayList list, HashMap<Integer, Integer> day_start) {
+    ViewPager2Adapter(Context context, ArrayList list) {
         this.context = context;
         this.list = list;
-        this.day_start = day_start;
     }
 
     @NonNull
@@ -37,19 +36,21 @@ class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 //        if(current_index+position > 0) {
-        String date = "";
-        Map<String, Object> recent = (Map<String, Object>) list.get(day_start.get(position));
-        int current_day = (int) (long) recent.get("day_count");
-        for(int i = day_start.get(position)+1; i < list.size(); i++) {
-            date += recent.get("month") + "/" + recent.get("day")+"\n";
-            recent = (Map<String, Object>) list.get(i);
-            if((int)(long)recent.get("day_count") != current_day) {
-                break;
-            }
+        String time = "";
+        Map<String, Object> recent = (Map<String, Object>)list.get(position);
+        ArrayList<Map<String, Object>> entries = (ArrayList<Map<String, Object>>) recent.get("entries");
+//        int current_day = (int) (long) recent.get("day_count");
+        Map<String, Object> current;
+        for(int i = 0; i < entries.size(); i++) {
+            current = entries.get(i);
+            time += current.get("hour") + ":" + current.get("minute")+"\n";
+//            if((int)(long)recent.get("day_count") != current_day) {
+//                break;
+//            }
 //            current_day = i;
 
         }
-        holder.text.setText(date);
+        holder.text.setText(time);
 
 //            int current_day = (int) recent.get("day_count");
 //            for(int i = current_index+position; i < list.size(); i++) {

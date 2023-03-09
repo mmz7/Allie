@@ -16,6 +16,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,11 +42,11 @@ public class LogActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.log_container);
 
-        day_start.put(0,0);
-        day_start.put(1,3);
-        day_start.put(2,4);
-        day_start.put(3,7);
-        day_start.put(4,9);
+//        day_start.put(0,0);
+//        day_start.put(1,3);
+//        day_start.put(2,4);
+//        day_start.put(3,7);
+//        day_start.put(4,9);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
@@ -82,43 +83,45 @@ public class LogActivity extends AppCompatActivity {
                 // whenever data at this location is updated.
                 id = (ArrayList<Object>) dataSnapshot.getValue();
                 System.out.print(id);
-                log_len = id.size();
+
+                ArrayList<Object> current_slide = (ArrayList<Object>) ((Map<String, Object>)id.get(current_vp_pos)).get("entries");
+                log_len = current_slide.size();
 
                 // rearrange log by date/time
-                Map<String, Object> recent = (Map<String, Object>) id.get(log_len-1);
+                Map<String, Object> recent = (Map<String, Object>) current_slide.get(log_len-1);
                 Map<String, Object> comp;
 
-                LocalDateTime recent_date = LocalDateTime.of((int)(long)recent.get("year"), (int)(long)recent.get("month"),
-                        (int)(long)recent.get("day"), (int)(long)recent.get("hour"), (int)(long)recent.get("minute"));
+                LocalTime recent_date = LocalTime.of((int)(long)recent.get("hour"), (int)(long)recent.get("minute"));
                 recent_index = log_len-1;
                 for(int i = log_len-2; i >= 0; i--) {
-                    comp = (Map<String, Object>) id.get(i);
-                    LocalDateTime comp_date = LocalDateTime.of((int)(long)comp.get("year"), (int)(long)comp.get("month"),
-                            (int)(long)comp.get("day"), (int)(long)comp.get("hour"), (int)(long)comp.get("minute"));
+                    comp = (Map<String, Object>) current_slide.get(i);
+                    LocalTime comp_date = LocalTime.of((int)(long)comp.get("hour"), (int)(long)comp.get("minute"));
                     if(recent_date.compareTo(comp_date) >= 0) {
                         if(i != log_len-2) {
                             System.out.println("for loop ends");
                             if(i > 0) {
-                                id.set(i + 1, recent);
+                                current_slide.set(i + 1, recent);
                                 recent_index = i+1;
-                                int comp_daycount = (int)(long)comp.get("day_count");
-                                if(comp_daycount != (int)(long)recent.get("day_count")) {
-                                    day_start.put((int)(long)recent.get("day_count"), i+1);
-                                }
+//                                int comp_daycount = (int)(long)comp.get("day_count");
+//                                if(comp_daycount != (int)(long)recent.get("day_count")) {
+//                                    day_start.put((int)(long)recent.get("day_count"), i+1);
+//                                }
                             } else {
-                                id.set(0, recent);
+                                current_slide.set(0, recent);
                                 recent_index = 0;
                             }
                         }
                         break;
                     }
-                    id.set(i+1, comp);
+                    current_slide.set(i+1, comp);
                 }
-                System.out.println(id);
+//                System.out.println(id);
 
-                System.out.println(day_start);
+//                System.out.println(day_start);
+                ((Map<String, Object>)id.get(current_vp_pos)).put("entries", current_slide);
+                myRef2.setValue(id);
 
-                vpAdapter = new ViewPager2Adapter(context, id, day_start);
+                vpAdapter = new ViewPager2Adapter(context, id);
 
                 viewPager.setAdapter(vpAdapter);
                 viewPager.setCurrentItem(2);
@@ -139,12 +142,11 @@ public class LogActivity extends AppCompatActivity {
                 if(recent.get("type").equals("symptom")) {
                     ArrayList<String> symptoms = new ArrayList<String>(Arrays.asList(((String) Objects.requireNonNull(recent.get("entry"))).split(", ")));
                     for (int i = recent_index-1; i >= 0; i--) {
-                        comp = (Map<String, Object>)id.get(i);
-                        LocalDateTime comp_date = LocalDateTime.of((int)(long)comp.get("year"), (int)(long)comp.get("month"),
-                                (int)(long)comp.get("day"), (int)(long)comp.get("hour"), (int)(long)comp.get("minute"));
-                        if(Math.abs(comp_date.toEpochSecond(ZoneOffset.UTC) - recent_date.toEpochSecond(ZoneOffset.UTC)) > 172800) {
-                            break;
-                        }
+                        comp = (Map<String, Object>)current_slide.get(i);
+//                        LocalTime comp_date = LocalTime.of((int)(long)comp.get("hour"), (int)(long)comp.get("minute"));
+//                        if(Math.abs(comp_date.toEpochSecond(ZoneOffset.UTC) - recent_date.toEpochSecond(ZoneOffset.UTC)) > 172800) {
+//                            break;
+//                        }
                         if(comp.get("type").equals("food")) {
                             ArrayList<String> foods = new ArrayList<String>(Arrays.asList(((String) Objects.requireNonNull(comp.get("entry"))).split(", ")));
                             for(String symp : symptoms) {
@@ -168,7 +170,6 @@ public class LogActivity extends AppCompatActivity {
                     }
                 }
                 System.out.println(symptoms_map);
-                myRef2.setValue(id);
 
 
 
