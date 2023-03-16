@@ -1,11 +1,16 @@
 package com.zhangmegan.allie;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 public class MainActivity2 extends AppCompatActivity {
     Button enter;
@@ -14,13 +19,11 @@ public class MainActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.navigation_container);
 
-        enter = findViewById(R.id.enter);
-
-        enter.setOnClickListener(new View.OnClickListener() {
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
+        BottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), LogActivity.class);
-                startActivity(intent);
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                return false;
             }
         });
     }
