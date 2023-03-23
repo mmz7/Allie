@@ -56,33 +56,6 @@ public class LogActivity extends Fragment {
 
         DatabaseReference myRef2 = database.getReference("User1");
 
-        viewPager = view.findViewById(R.id.viewpager);
-        vpAdapter = new ViewPager2Adapter(view.getContext(), id);
-        viewPager.setAdapter(vpAdapter);
-//        viewPager.setCurrentItem(2);
-
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            // This method is triggered when there is any scrolling activity for the current page
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
-            }
-
-            // triggered when you select a new page
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                current_vp_pos = position;
-            }
-
-            // triggered when there is
-            // scroll state will be changed
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                super.onPageScrollStateChanged(state);
-            }
-        });
-
         myRef2.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -186,6 +159,33 @@ public class LogActivity extends Fragment {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Failed to read value
                 System.out.println("Failed to read value."+ databaseError.toException());
+            }
+        });
+
+        viewPager = view.findViewById(R.id.viewpager);
+        vpAdapter = new ViewPager2Adapter(view.getContext(), id);
+        viewPager.setAdapter(vpAdapter);
+//        viewPager.setCurrentItem(2);
+
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            // This method is triggered when there is any scrolling activity for the current page
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+            }
+
+            // triggered when you select a new page
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                current_vp_pos = position;
+            }
+
+            // triggered when there is
+            // scroll state will be changed
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
             }
         });
 

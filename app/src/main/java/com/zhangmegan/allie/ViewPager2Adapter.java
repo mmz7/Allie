@@ -37,22 +37,22 @@ class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 //        if(current_index+position > 0) {
-//        String time = "";
-//        Map<String, Object> recent = (Map<String, Object>)list.get(position);
-//        ArrayList<Map<String, Object>> entries = (ArrayList<Map<String, Object>>) recent.get("entries");
-////        int current_day = (int) (long) recent.get("day_count");
-//        Map<String, Object> current;
-//        for(int i = 0; i < entries.size(); i++) {
-//            current = entries.get(i);
-//            time += current.get("hour") + ":" + current.get("minute")+"\n";
-////            if((int)(long)recent.get("day_count") != current_day) {
-////                break;
-////            }
-////            current_day = i;
-//
-//        }
-//        holder.text.setText(time);
-        holder.text.setText((String) test[position]);
+        String time = "";
+        Map<String, Object> recent = (Map<String, Object>) list.get(position);
+        ArrayList<Map<String, Object>> entries = (ArrayList<Map<String, Object>>) recent.get("entries");
+//        int current_day = (int) (long) recent.get("day_count");
+        Map<String, Object> current;
+        for (int i = 0; i < entries.size(); i++) {
+            current = entries.get(i);
+            time += current.get("hour") + ":" + current.get("minute") + "\n";
+//            if((int)(long)recent.get("day_count") != current_day) {
+//                break;
+//            }
+//            current_day = i;
+
+        }
+        holder.text.setText(time);
+//        holder.text.setText((String) test[position]);
 
 //            int current_day = (int) recent.get("day_count");
 //            for(int i = current_index+position; i < list.size(); i++) {
@@ -62,11 +62,12 @@ class ViewPager2Adapter extends RecyclerView.Adapter<ViewPager2Adapter.ViewHolde
 //            }
 //        }
 //        holder.text.setText(test_arr[position]);
+//        }
     }
 
     @Override
     public int getItemCount() {
-        return test.length;
+        return list.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
