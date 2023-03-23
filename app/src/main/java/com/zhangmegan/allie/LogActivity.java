@@ -1,10 +1,12 @@
 package com.zhangmegan.allie;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +33,7 @@ import java.util.Objects;
 public class LogActivity extends Fragment {
     ViewPager2 viewPager;
     ViewPager2Adapter vpAdapter;
+    TextView test;
     HashMap<String, HashMap<String, Integer>> symptoms_map = new HashMap<String, HashMap<String, Integer>>();
     //    HashMap<String, ArrayList> ingredients_map = new HashMap<String, ArrayList>();
     HashMap<String, Integer> ing_scores = new HashMap<String, Integer>();
@@ -44,12 +47,19 @@ public class LogActivity extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View fragment = inflater.inflate(R.layout.log_container, container, false);
-
+        return fragment;
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         DatabaseReference myRef2 = database.getReference("User1");
 
-        viewPager = getActivity().findViewById(R.id.viewpager);
+        viewPager = view.findViewById(R.id.viewpager);
+        vpAdapter = new ViewPager2Adapter(view.getContext(), id);
+        viewPager.setAdapter(vpAdapter);
+//        viewPager.setCurrentItem(2);
 
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -118,10 +128,7 @@ public class LogActivity extends Fragment {
                 ((Map<String, Object>)id.get(current_vp_pos)).put("entries", current_slide);
                 myRef2.setValue(id);
 
-                vpAdapter = new ViewPager2Adapter(getActivity(), id);
-
-                viewPager.setAdapter(vpAdapter);
-                viewPager.setCurrentItem(2);
+                System.out.println("done");
 
                 // find first entry of the same day
 //                LocalDate last_entry = LocalDate.of((int)(long)recent.get("year"), (int)(long)recent.get("month"),
@@ -182,8 +189,11 @@ public class LogActivity extends Fragment {
             }
         });
 
-        return fragment;
     }
+
+}
+
+
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
@@ -334,4 +344,3 @@ public class LogActivity extends Fragment {
 //
 //
 //    }
-}
